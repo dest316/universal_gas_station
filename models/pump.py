@@ -6,6 +6,8 @@ from models.device import Device
 
 
 class Pump:
+    # скорость зарядки
+    charge_speed: float
     def __init__(self, storage: FuelStorage):
         self.storage = storage  # Ссылается на хранилище топлива
     

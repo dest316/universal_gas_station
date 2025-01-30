@@ -1,5 +1,6 @@
 from abc import abstractmethod
 from models.pump import Pump
+from models.refueling_station import RefuelingStation
 
 
 class Device:
@@ -8,16 +9,30 @@ class Device:
         self.required_fuel_type = required_fuel_type  # Какой тип топлива требует устройство
         self.gas_tank_capacity=gas_tank_capacity
     
-    def refuel(self, pump: Pump, amount: float):
+    def refuel(self, gas_station: RefuelingStation, amount: float):
         
         # TODO: Переписать логику: метод должен обращаться к объекту refueling_station, он выступает посредником к колонке.
         # Через этот метод будет получаться доступ к желаемой колонке (ее тоже можно передать в параметрах) через метод 
         # колонки connect()
-        if pump.storage.fuel.fuel_type != self.required_fuel_type:
-            return "Несовместимый тип топлива!"
-        return pump.pump_fuel(amount)
+        self._prepare_to_refuel()
+        targer_pump = gas_station.get_free_pump(self, amount)
+        if not targer_pump:
+            print("На данной заправке нет свободных колонок")
+        else:
+            self._connect()
+
+
+
     
     @abstractmethod
     def _prepare_to_refuel():
         print("Какая-то логика действий для подготовки к заправке")
 
+    def _connect(self):
+        print("Колонка соединена с устройством")
+        # Позже сюда можно добавить логику подключения адаптера к устройству
+    def _consume_fuel(self, fuel_batch_size: float, fuel_total_size: float):
+        for i in range(0, fuel_total_size, fuel_batch_size):
+            # можно написать словарь, вида {тип топлива: ед. измерения} и подставлять в вывод значение оттуда
+            print(f"Заправлено уже {i} {self.required_fuel_type}.")
+        print("Заправка окончена")

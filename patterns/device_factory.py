@@ -1,4 +1,5 @@
 from models.device import Device
+from patterns.consume_fuel_decorator import set_limit
 
 
 class Car(Device):
@@ -6,14 +7,21 @@ class Car(Device):
         super().__init__(name="Car", required_fuel_type="gasoline", gas_tank_capacity=50, gas_tank_port="gasoline_standart")
         for key, value in kwargs:
             setattr(self, key, value)
+
     def _prepare_to_refuel():
         print("Глушим двигатель...")
         print("Открываем крышку бензобака...")
+    
+    @set_limit
+    def _consume_fuel(self, fuel_batch_size, fuel_total_size):
+        return super()._consume_fuel(fuel_batch_size, fuel_total_size)
 
 
 class ElectricScooter(Device):
-    def __init__(self):
+    def __init__(self, **kwargs):
         super().__init__(name="Electric Scooter", required_fuel_type="electricity", gas_tank_capacity=7000, gas_tank_port="usb-c")
+        for key, value in kwargs:
+            setattr(self, key, value)
     def _prepare_to_refuel():
         print("Выключаем скутер...")
         print("Убираем заглушку с порта зарядки...")
