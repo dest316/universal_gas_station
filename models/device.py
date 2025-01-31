@@ -19,17 +19,15 @@ class Device:
         if not targer_pump:
             print("На данной заправке нет свободных колонок")
         else:
-            self._connect()
-
-
-
+            self._connect(amount, targer_pump.charge_speed)
     
     @abstractmethod
     def _prepare_to_refuel():
         print("Какая-то логика действий для подготовки к заправке")
 
-    def _connect(self):
+    def _connect(self, amount, charge_speed):
         print("Колонка соединена с устройством")
+        self._consume_fuel(charge_speed, amount)
         # Позже сюда можно добавить логику подключения адаптера к устройству
     def _consume_fuel(self, fuel_batch_size: float, fuel_total_size: float):
         for i in range(0, fuel_total_size, fuel_batch_size):
