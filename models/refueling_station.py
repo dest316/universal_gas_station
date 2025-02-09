@@ -1,21 +1,20 @@
 from models.pump import Pump
-from models.device import Device
-from models.fuel_storage import FuelStorage
 
 
 class RefuelingStation:
     def __init__(self, location: str):
         self.location = location
-        self.pumps = []
+        self.pumps:list[Pump] = []
         self.storages = []
     
     def add_pump(self, pump: Pump):
         self.pumps.append(pump)
     
     
-    def get_free_pump(self, fueled_device: Device, required_amount: float) -> Pump|None:
+    def get_free_pump(self, required_fuel_type: str, required_amount: float) -> Pump|None:
+        print(f"required_fuel_type = {required_fuel_type}, pump_fuel_type = {self.pumps[0].fuel_type}")
         suitable_pumps = list(filter(
-            lambda x: x.get_readiness(required_amount) and fueled_device.required_fuel_type == x.fuel_type, self.pumps
+            lambda x: x.get_readiness(required_amount) and required_fuel_type == x.fuel_type, self.pumps
         ))
         # Если свободных колонок несколько - возвращаем с самым большим запасом топлива
         if suitable_pumps:
